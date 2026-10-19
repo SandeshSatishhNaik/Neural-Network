@@ -1,0 +1,12 @@
+
+=== data_cone: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Nu', 'Sh']
+    data_cone: candidate MLP                                validation NRMSE 2.400e-03
+    data_cone: candidate PASR quad anchor                   validation NRMSE 2.266e-03
+    data_cone: candidate PASR dual encoding                 validation NRMSE 2.096e-03
+    data_cone: candidate PASR quad anchor + dual encoding   validation NRMSE 2.329e-03
+    data_cone: selected 'PASR dual encoding' (lowest validation error)
+    data_cone: seed 0 done, final train loss 7.14e-07, val 4.89e-06
+    data_cone: seed 1 done, final train loss 6.84e-07, val 5.31e-06
+    data_cone: seed 2 done, final train loss 6.64e-07, val 4.18e-06
+    data_cone |     Nu | PASR dual encoding | test R2 0.999999  RMSE 2.964e-04  MaxRelErr 0.67%
+    data_cone |     Sh | PASR dual encoding | test R2 0.999995  RMSE 4.945e-04  MaxRelErr 0.53%

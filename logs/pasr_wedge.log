@@ -1,0 +1,12 @@
+
+=== data_wedge: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Nu', 'Sh']
+    data_wedge: candidate MLP                                validation NRMSE 2.493e-03
+    data_wedge: candidate PASR quad anchor                   validation NRMSE 1.403e-03
+    data_wedge: candidate PASR dual encoding                 validation NRMSE 1.744e-03
+    data_wedge: candidate PASR quad anchor + dual encoding   validation NRMSE 1.578e-03
+    data_wedge: selected 'PASR quad anchor' (lowest validation error)
+    data_wedge: seed 0 done, final train loss 2.14e-05, val 1.64e-04
+    data_wedge: seed 1 done, final train loss 3.01e-05, val 2.39e-04
+    data_wedge: seed 2 done, final train loss 2.22e-05, val 1.85e-04
+    data_wedge |     Nu | PASR quad anchor | test R2 1.000000  RMSE 1.389e-04  MaxRelErr 0.27%
+    data_wedge |     Sh | PASR quad anchor | test R2 0.999996  RMSE 4.204e-04  MaxRelErr 0.43%
