@@ -12,3 +12,26 @@
     data_cone |     Sh | PASR dual encoding | test R2 0.999995  RMSE 4.945e-04  MaxRelErr 0.53%
     data_cone__Nu: candidate MLP                                validation NRMSE 1.241e-03
     data_cone__Nu: candidate PASR quad anchor                   validation NRMSE 6.585e-04
+    data_cone__Nu: candidate PASR dual encoding                 validation NRMSE 1.130e-03
+    data_cone__Nu: candidate PASR quad anchor + dual encoding   validation NRMSE 7.802e-04
+    data_cone__Nu: selected 'PASR quad anchor' (lowest validation error)
+    data_cone__Nu: seed 0 done, final train loss 9.25e-06, val 6.16e-05
+    data_cone__Nu: seed 1 done, final train loss 8.67e-06, val 5.38e-05
+    data_cone__Nu: seed 2 done, final train loss 1.08e-05, val 6.62e-05
+    data_cone__Nu |     Nu | PASR quad anchor | test R2 1.000000  RMSE 1.116e-04  MaxRelErr 0.27%
+    data_cone__Sh: candidate MLP                                validation NRMSE 3.240e-03
+    data_cone__Sh: candidate PASR quad anchor                   validation NRMSE 2.448e-03
+    data_cone__Sh: candidate PASR dual encoding                 validation NRMSE 2.990e-03
+    data_cone__Sh: candidate PASR quad anchor + dual encoding   validation NRMSE 3.798e-03
+    data_cone__Sh: selected 'PASR quad anchor' (lowest validation error)
+    data_cone__Sh: seed 0 done, final train loss 1.51e-05, val 1.43e-04
+    data_cone__Sh: seed 1 done, final train loss 1.53e-05, val 2.40e-04
+    data_cone__Sh: seed 2 done, final train loss 1.45e-05, val 1.41e-04
+    data_cone__Sh |     Sh | PASR quad anchor | test R2 0.999996  RMSE 4.639e-04  MaxRelErr 0.79%
+
+All results in /home/user/Neural-Network/results_pasr
+        model             design target    n       R2     RMSE      MAE  MAPE_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+    data_cone PASR dual encoding     Nu 1100 0.999999 0.000296 0.000187  0.038904       0.673429      93.090909      99.818182
+    data_cone PASR dual encoding     Sh 1100 0.999995 0.000495 0.000215  0.013470       0.529807      98.818182      99.818182
+data_cone__Nu   PASR quad anchor     Nu 1100 1.000000 0.000112 0.000072  0.015563       0.273208      99.181818     100.000000
+data_cone__Sh   PASR quad anchor     Sh 1100 0.999996 0.000464 0.000215  0.014195       0.794629      98.181818      99.909091

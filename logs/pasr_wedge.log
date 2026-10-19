@@ -12,3 +12,26 @@
     data_wedge |     Sh | PASR quad anchor | test R2 0.999996  RMSE 4.204e-04  MaxRelErr 0.43%
     data_wedge__Nu: candidate MLP                                validation NRMSE 1.369e-03
     data_wedge__Nu: candidate PASR quad anchor                   validation NRMSE 6.647e-04
+    data_wedge__Nu: candidate PASR dual encoding                 validation NRMSE 1.264e-03
+    data_wedge__Nu: candidate PASR quad anchor + dual encoding   validation NRMSE 1.070e-03
+    data_wedge__Nu: selected 'PASR quad anchor' (lowest validation error)
+    data_wedge__Nu: seed 0 done, final train loss 1.12e-05, val 6.90e-05
+    data_wedge__Nu: seed 1 done, final train loss 9.77e-06, val 8.98e-05
+    data_wedge__Nu: seed 2 done, final train loss 1.14e-05, val 7.34e-05
+    data_wedge__Nu |     Nu | PASR quad anchor | test R2 1.000000  RMSE 1.025e-04  MaxRelErr 0.31%
+    data_wedge__Sh: candidate MLP                                validation NRMSE 3.510e-03
+    data_wedge__Sh: candidate PASR quad anchor                   validation NRMSE 2.165e-03
+    data_wedge__Sh: candidate PASR dual encoding                 validation NRMSE 2.242e-03
+    data_wedge__Sh: candidate PASR quad anchor + dual encoding   validation NRMSE 2.337e-03
+    data_wedge__Sh: selected 'PASR quad anchor' (lowest validation error)
+    data_wedge__Sh: seed 0 done, final train loss 1.57e-05, val 2.42e-04
+    data_wedge__Sh: seed 1 done, final train loss 1.34e-05, val 2.84e-04
+    data_wedge__Sh: seed 2 done, final train loss 1.98e-05, val 1.85e-04
+    data_wedge__Sh |     Sh | PASR quad anchor | test R2 0.999997  RMSE 3.568e-04  MaxRelErr 0.44%
+
+All results in /home/user/Neural-Network/results_pasr
+         model           design target    n       R2     RMSE      MAE  MAPE_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+    data_wedge PASR quad anchor     Nu 1100 1.000000 0.000139 0.000075  0.020385       0.274383      98.818182          100.0
+    data_wedge PASR quad anchor     Sh 1100 0.999996 0.000420 0.000180  0.012298       0.434171      98.545455          100.0
+data_wedge__Nu PASR quad anchor     Nu 1100 1.000000 0.000103 0.000056  0.016426       0.305860      99.181818          100.0
+data_wedge__Sh PASR quad anchor     Sh 1100 0.999997 0.000357 0.000159  0.010842       0.444572      98.545455          100.0

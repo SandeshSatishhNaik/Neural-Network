@@ -1,0 +1,5 @@
+design,anchor,dual,val_nrmse
+MLP,none,False,0.003239566967107903
+PASR quad anchor,quad,False,0.0024479188372367997
+PASR dual encoding,none,True,0.0029903439827802395
+PASR quad anchor + dual encoding,quad,True,0.0037977588380846256
