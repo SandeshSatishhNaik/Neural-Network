@@ -40,7 +40,8 @@ CPU is enough (float64 is faster on CPU at this size). Training is about 3–5 m
 | Smoke test (seconds per network) | `python train_separate.py data/*.xlsx --quick --out results_quick` |
 | Plain MLP, one model per dataset | `python train_separate.py data/*.xlsx --out results_mlp` |
 | **Recommended final run** | `python train_separate.py data/*.xlsx --per-target --auto --seeds 3 --out results_pasr` |
-| Fixed design instead of auto | add `--anchor quad` (Nu) or `--dual-encoding` (Sh) |
+| Fixed design instead of auto | add `--anchor quad` (chosen on validation for every geometry and target on 19 Oct 2026, see `docs/RESULTS_AND_REVIEW.md` §7) |
+| Final configuration on a new split | `python analysis/split_commands.py results_final/final_config.csv <split seeds>`, then `python analysis/final_report.py results_final/final_config.csv` |
 
 `--auto` trains four designs (MLP, quadratic anchor, dual encoding, both) and keeps the one with the lowest **validation** error; it writes `design_selection.csv`. It is about 4× slower than a single design.
 
@@ -52,7 +53,7 @@ CPU is enough (float64 is faster on CPU at this size). Training is about 3–5 m
 - **Network:** fully connected, 4 hidden layers × 128, SiLU, linear output.
 - **Training:** full batch, float64; Adam (lr 3e-3, cosine decay, 2,500 steps) then L-BFGS (≤1,500 iterations, history 50, strong-Wolfe line search); loss = MSE on the standardised (or rescaled residual) target.
 - **Quadratic-anchored residual design** (`--anchor quad`, called PASR-Net in earlier notes): fit a least-squares quadratic response surface p(x) (78 terms) on training rows; the network learns r = t − p(x) divided by its training sd s; prediction t̂ = p(x) + s·NN(x). Best for Nu.
-- **Dual encoding** (`--dual-encoding`): network input = [scaled x, standardised log(x + 0.01·range)], 22 inputs. Best for Sh.
+- **Dual encoding** (`--dual-encoding`): network input = [scaled x, standardised log(x + 0.01·range)], 22 inputs. Beats the plain MLP for Sh, but not the quadratic anchor (19 Oct 2026, single seed, within noise).
 - **Ensemble:** `--seeds 3` averages three independently initialised networks in physical units.
 
 ## Metrics written (`metrics.csv`, per target, for train / val / test)

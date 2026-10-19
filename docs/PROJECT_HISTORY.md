@@ -66,3 +66,13 @@ The combination was named PASR-Net (Polynomial-Anchored, Scaled-Residual network
 - Results page with parity, residual, loss, importance and partial-dependence plots.
 - Mathematical foundations document (data analysis, transforms, network equations, optimisation, ensembling, metrics, worked example).
 - Animated workflow page and four block diagrams of the final design.
+
+## 9. Final configuration and fresh test sets (Claude Code, 19 Oct 2026)
+
+- Data checked against CLAUDE.md: all facts hold (plate–wedge Sh correlation is 0.99972 rather than 0.9999).
+- The user's tuned pipeline (§5) could not be recovered: no earlier version in git and the user no longer has the code. Its table is marked not reproducible; the planned "tuned settings + quad anchor" experiment was dropped.
+- Main run `--per-target --auto --seeds 3` (split seed 0). Joint vs per-target chosen on validation RMSE (`analysis/select_design.py`): **per-target with the quadratic anchor for every geometry and target**. Margins are below run-to-run noise except cone Nu (joint model 1.9× worse, because its design was chosen for both targets and picked dual encoding).
+- Two earlier beliefs not confirmed: Sh is not better in the joint model once the PASR designs are available, and dual encoding does not beat the quadratic anchor for Sh (it beat the plain MLP).
+- Final design fixed and rerun on split seeds 1–4 (`analysis/split_commands.py`). Paper table with mean ± sd over seeds 0–4 in `results_final/` (`analysis/final_report.py`).
+- Checks: three failures, all Sh on split 3 (RMSE > 2× reference on plate and wedge, max relative error 1.51% on cone), all caused by a handful of rows with Nb at its lower bound and Nt/Nb ≈ 5–7. New open item: Nt/Nb as an input feature (needs the user's agreement; to be judged on validation and confirmed on unused split seeds 5–9, because the problem was found on test rows).
+- Process notes: the three geometries were trained as parallel single-thread processes (1.6× faster than one 4-thread process); `results_pasr/summary_metrics.csv` was rebuilt from the per-model files because each process overwrote it. While checking that the run had finished, the split-0 test table printed by `train_separate.py` was seen before the joint vs per-target choice; that choice is made by a script from validation rows only.
