@@ -1,0 +1,10 @@
+
+=== data_plate: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Nu']
+    data_plate: seed 0 done, final train loss 9.34e-06, val 3.64e-05
+    data_plate: seed 1 done, final train loss 1.01e-05, val 3.40e-05
+    data_plate: seed 2 done, final train loss 8.85e-06, val 3.32e-05
+    data_plate |     Nu | PASR quad anchor | test R2 1.000000  RMSE 8.683e-05  MaxRelErr 0.15%
+
+All results in /home/user/Neural-Network/results_split2/Nu
+     model           design target    n  R2     RMSE     MAE  MAPE_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+data_plate PASR quad anchor     Nu 1100 1.0 0.000087 0.00005  0.013635       0.146044      99.818182          100.0
