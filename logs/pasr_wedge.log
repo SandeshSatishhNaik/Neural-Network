@@ -10,3 +10,4 @@
     data_wedge: seed 2 done, final train loss 2.22e-05, val 1.85e-04
     data_wedge |     Nu | PASR quad anchor | test R2 1.000000  RMSE 1.389e-04  MaxRelErr 0.27%
     data_wedge |     Sh | PASR quad anchor | test R2 0.999996  RMSE 4.204e-04  MaxRelErr 0.43%
+    data_wedge__Nu: candidate MLP                                validation NRMSE 1.369e-03

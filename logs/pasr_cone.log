@@ -10,3 +10,5 @@
     data_cone: seed 2 done, final train loss 6.64e-07, val 4.18e-06
     data_cone |     Nu | PASR dual encoding | test R2 0.999999  RMSE 2.964e-04  MaxRelErr 0.67%
     data_cone |     Sh | PASR dual encoding | test R2 0.999995  RMSE 4.945e-04  MaxRelErr 0.53%
+    data_cone__Nu: candidate MLP                                validation NRMSE 1.241e-03
+    data_cone__Nu: candidate PASR quad anchor                   validation NRMSE 6.585e-04
