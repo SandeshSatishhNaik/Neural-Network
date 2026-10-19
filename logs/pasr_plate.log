@@ -11,3 +11,4 @@
     data_plate |     Nu | PASR quad anchor | test R2 1.000000  RMSE 1.394e-04  MaxRelErr 0.25%
     data_plate |     Sh | PASR quad anchor | test R2 0.999996  RMSE 3.982e-04  MaxRelErr 0.38%
     data_plate__Nu: candidate MLP                                validation NRMSE 1.432e-03
+    data_plate__Nu: candidate PASR quad anchor                   validation NRMSE 6.627e-04
