@@ -5,11 +5,13 @@ Each dataset file is trained in its own run: its own scaler, its own train/val/t
 its own model, its own outputs folder. Nothing is shared between datasets.
 
 Per model it writes:
-  metrics.csv            R2, RMSE, MAE, MaxAE, MaxRelErr(%) for train / val / test, per target
+  metrics.csv            R2, RMSE, MAE, MaxAE, MAPE, median / 95th-percentile / max relative error (%),
+                         within 0.1% / 0.5%, for train / val / test, per target
   loss_curve.png         train + validation loss vs iteration (log scale), Adam -> L-BFGS boundary
   error_histogram.png    histogram of test errors (predicted - true) per target
   parity.png             predicted vs true on the test set, per target
   predictions_test.csv   inputs, true and predicted values for every test row
+  predictions_val.csv    the same for every validation row
   loss_history.csv       iteration, phase, train loss, val loss
   model.pt + scaler.json trained weights and the exact scaling needed to reuse the model
 And one summary_metrics.csv + summary_r2_rmse.png across all datasets.
@@ -26,6 +28,7 @@ Usage:
   python train_separate.py data_cone.xlsx --quick               # smoke test, ~20 s per network
   python train_separate.py data/*.xlsx --per-target --auto      # PASR-Net, design chosen per target on validation
   python train_separate.py data_cone.xlsx --anchor quad          # PASR-Net with quadratic anchor
+  python train_separate.py data_cone.xlsx --anchor quad --ratio-features   # + standardised log(Nt/Nb) input
 """
 import argparse, json, os, time, glob
 import numpy as np, pandas as pd, torch, torch.nn as nn
@@ -146,6 +149,8 @@ def metrics(yt, yp):
                 RMSE=float(np.sqrt((e ** 2).mean())), MAE=float(np.abs(e).mean()),
                 MaxAE=float(np.abs(e).max()),
                 MAPE_pct=float(100 * rel.mean()),
+                MedRelErr_pct=float(100 * np.median(rel)),
+                P95RelErr_pct=float(100 * np.percentile(rel, 95)),
                 MaxRelErr_pct=float(100 * rel.max()),
                 Within_0p1pct=float(100 * (rel <= 1e-3).mean()),
                 Within_0p5pct=float(100 * (rel <= 5e-3).mean()))
@@ -204,6 +209,14 @@ def log_features(Xdf, Xref):
     return torch.tensor((L - Lr.mean(0)) / sd)
 
 
+def ratio_feature(Xdf, tr):
+    """log(Nt/Nb), standardised with training rows: one extra column for the network and the anchor."""
+    if not {"Nt", "Nb"} <= set(Xdf.columns): raise SystemExit("--ratio-features needs input columns Nt and Nb")
+    L = np.log(Xdf["Nt"].values / Xdf["Nb"].values)
+    mu, sd = L[tr].mean(), L[tr].std()
+    return torch.tensor((L - mu) / sd).unsqueeze(1), (float(mu), float(sd))
+
+
 def quad_features(x):
     """[1, x_i, x_i*x_j (i<=j)] -> full quadratic response surface (1 + d + d(d+1)/2 terms)."""
     cols = [torch.ones(len(x), 1), x]
@@ -219,8 +232,12 @@ def fit_model(X, Y, tr, va, args, anchor, dual, seed):
     sc = Scaler().fit(X.iloc[tr], Y.iloc[tr], log_cols)
     x, y = sc.x(X), sc.y(Y)
     z = torch.cat([x, log_features(X, X.iloc[tr])], 1) if dual else x
+    rf, ratio_stats = ratio_feature(X, tr) if args.ratio_features else (None, None)
+    if rf is not None: z = torch.cat([z, rf], 1)
     if anchor == "quad":
-        Q = quad_features(x); A = Q[tr]
+        Q = quad_features(x)
+        if rf is not None: Q = torch.cat([Q, rf], 1)          # log(Nt/Nb) as an extra linear anchor term
+        A = Q[tr]
         coef = torch.linalg.solve(A.T @ A + 1e-10 * torch.eye(A.shape[1]), A.T @ y[tr]); base = Q @ coef
     else:
         coef, base = None, torch.zeros_like(y)
@@ -229,7 +246,8 @@ def fit_model(X, Y, tr, va, args, anchor, dual, seed):
     m = MLP(z.shape[1], y.shape[1], args.width, args.depth, args.act)
     hist = train(m, z[tr], r[tr] / s, z[va], r[va] / s, args.adam_steps, args.lbfgs_iter, args.lr)
     with torch.no_grad(): t = base + s * m(z)
-    return dict(sc=sc, pred=sc.inv(t.numpy()), hist=hist, net=m, coef=coef, scale=s, anchor=anchor, dual=dual)
+    return dict(sc=sc, pred=sc.inv(t.numpy()), hist=hist, net=m, coef=coef, scale=s, anchor=anchor, dual=dual,
+                ratio_stats=ratio_stats)
 
 
 CANDIDATES = [("none", False), ("quad", False), ("none", True), ("quad", True)]
@@ -263,7 +281,7 @@ def run_one(name, X, Y, args, out_dir):
         print(f"    {name}: seed {s} done, final train loss {f['hist'][-1][2]:.2e}, val {f['hist'][-1][3]:.2e}")
     hists = [f["hist"] for f in fits]; sc = fits[0]["sc"]
     Pall = np.mean([f["pred"] for f in fits], 0); P = {"train": Pall[tr], "val": Pall[va], "test": Pall[te]}
-    design = CAND_NAME[(anchor, dual)]
+    design = CAND_NAME[(anchor, dual)] + (" + log(Nt/Nb)" if args.ratio_features else "")
     rows = []
     for k, ix in (("train", tr), ("val", va), ("test", te)):
         for j, c in enumerate(Y.columns):
@@ -275,12 +293,14 @@ def run_one(name, X, Y, args, out_dir):
     plot_loss(hists, os.path.join(out_dir, "loss_curve.png"), f"{name} [{design}]: training and validation loss{lbl}", args.adam_steps)
     plot_hist(yt, P["test"], list(Y.columns), os.path.join(out_dir, "error_histogram.png"), f"{name} [{design}]: test errors (n = {len(te)})")
     plot_parity(yt, P["test"], list(Y.columns), os.path.join(out_dir, "parity.png"), f"{name} [{design}]: predicted vs true, test set", mt)
-    pt = X.iloc[te].copy()
-    for j, c in enumerate(Y.columns): pt[f"{c}_true"] = yt[:, j]; pt[f"{c}_pred"] = P["test"][:, j]; pt[f"{c}_error"] = P["test"][:, j] - yt[:, j]
-    pt.to_csv(os.path.join(out_dir, "predictions_test.csv"), index_label="row")
+    for k, ix in (("test", te), ("val", va)):
+        pt = X.iloc[ix].copy()
+        for j, c in enumerate(Y.columns): pt[f"{c}_true"] = Y.values[ix, j]; pt[f"{c}_pred"] = P[k][:, j]; pt[f"{c}_error"] = P[k][:, j] - Y.values[ix, j]
+        pt.to_csv(os.path.join(out_dir, f"predictions_{k}.csv"), index_label="row")
     pd.DataFrame([dict(seed=s, iteration=r[0], phase=r[1], train_loss=r[2], val_loss=r[3]) for s, h in enumerate(hists) for r in h]
                  ).to_csv(os.path.join(out_dir, "loss_history.csv"), index=False)
     json.dump({"scaler": sc.to_json(), "design": design, "anchor": anchor, "dual_encoding": dual,
+               "ratio_features": bool(args.ratio_features), "ratio_mean_sd": fits[0]["ratio_stats"],
                "residual_scale_per_seed": [f["scale"].tolist() for f in fits],
                "args": vars(args), "inputs": list(X.columns), "targets": list(Y.columns),
                "n_train": len(tr), "n_val": len(va), "n_test": len(te), "seconds": time.time() - t0},
@@ -309,6 +329,8 @@ def main():
     ap.add_argument("--anchor", default="none", choices=["none", "quad"],
                     help="PASR-Net: 'quad' = least-squares quadratic anchor + network on the rescaled residual")
     ap.add_argument("--dual-encoding", action="store_true", help="PASR-Net: feed the network both x and log x")
+    ap.add_argument("--ratio-features", action="store_true",
+                    help="append standardised log(Nt/Nb) to the network inputs and the quadratic anchor's linear terms")
     ap.add_argument("--auto", action="store_true",
                     help="try MLP and the 3 PASR-Net variants, keep the one with the lowest VALIDATION error (4x slower)")
     args = ap.parse_args()
@@ -335,7 +357,7 @@ def main():
         fig.suptitle("Test-set accuracy, every model", x=.01, ha="left"); fig.tight_layout()
         fig.savefig(os.path.join(args.out, "summary_r2_rmse.png"), dpi=300); plt.close(fig)
     print(f"\nAll results in {os.path.abspath(args.out)}")
-    print(T[["model", "design", "target", "n", "R2", "RMSE", "MAE", "MAPE_pct", "MaxRelErr_pct", "Within_0p1pct", "Within_0p5pct"]].to_string(index=False))
+    print(T[["model", "design", "target", "n", "R2", "RMSE", "MAE", "MAPE_pct", "MedRelErr_pct", "P95RelErr_pct", "MaxRelErr_pct", "Within_0p1pct", "Within_0p5pct"]].to_string(index=False))
 
 
 if __name__ == "__main__":

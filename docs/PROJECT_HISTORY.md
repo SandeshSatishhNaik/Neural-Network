@@ -76,3 +76,13 @@ The combination was named PASR-Net (Polynomial-Anchored, Scaled-Residual network
 - Final design fixed and rerun on split seeds 1–4 (`analysis/split_commands.py`). Paper table with mean ± sd over seeds 0–4 in `results_final/` (`analysis/final_report.py`).
 - Checks: three failures, all Sh on split 3 (RMSE > 2× reference on plate and wedge, max relative error 1.51% on cone), all caused by a handful of rows with Nb at its lower bound and Nt/Nb ≈ 5–7. New open item: Nt/Nb as an input feature (needs the user's agreement; to be judged on validation and confirmed on unused split seeds 5–9, because the problem was found on test rows).
 - Process notes: the three geometries were trained as parallel single-thread processes (1.6× faster than one 4-thread process); `results_pasr/summary_metrics.csv` was rebuilt from the per-model files because each process overwrote it. While checking that the run had finished, the split-0 test table printed by `train_separate.py` was seen before the joint vs per-target choice; that choice is made by a script from validation rows only.
+
+## 10. Nt/Nb as a physics-based feature (Claude Code, 20 Oct 2026)
+
+Approved by the user after §9 showed Sh errors concentrated where Nt/Nb > 4.
+
+- `train_separate.py`: new `--ratio-features` (log(Nt/Nb), standardised on training rows, appended to the network inputs and to the anchor's linear terms; default off, verified bit-identical to the earlier smoke test); median and 95th-percentile relative error added to `metrics.csv`; `predictions_val.csv` written for every model.
+- `analysis/rebuild_predictions.py` rebuilds validation predictions of earlier runs from their weights (checked: all 30 reproduce their saved test predictions exactly), so the baseline did not need retraining.
+- Protocol: (a) final design vs (b) + `--ratio-features`, both 3-seed, on VALIDATION over split seeds 0–4. Decision rule fixed before any (b) result: (b) wins for a target if its validation RMSE is lower in ≥ 12 of 15 (geometry × split) pairs. Only then confirm on unused split seeds 5–9 (test once), with (a) also run there for comparison.
+- Check 1 replaced at the user's request by "RMSE within mean + 2 sd of split seeds 0–4 for that model". Note: on seeds 0–4 themselves this check cannot fail in practice (all 30 pass, including the two split-3 Sh runs that failed the old check), because the failing runs widen their own band. The R² ≥ 0.9999 floor is no longer part of check 1.
+

@@ -55,20 +55,23 @@ CPU is enough (float64 is faster on CPU at this size). Training is about 3–5 m
 - **Quadratic-anchored residual design** (`--anchor quad`, called PASR-Net in earlier notes): fit a least-squares quadratic response surface p(x) (78 terms) on training rows; the network learns r = t − p(x) divided by its training sd s; prediction t̂ = p(x) + s·NN(x). Best for Nu.
 - **Dual encoding** (`--dual-encoding`): network input = [scaled x, standardised log(x + 0.01·range)], 22 inputs. Beats the plain MLP for Sh, but not the quadratic anchor (19 Oct 2026, single seed, within noise).
 - **Ensemble:** `--seeds 3` averages three independently initialised networks in physical units.
+- **Ratio feature** (`--ratio-features`, default off, under evaluation since 20 Oct 2026): appends log(Nt/Nb), standardised on training rows, to the network inputs and as one extra linear term of the quadratic anchor (79 terms). Motivated by Sh errors concentrating where Nt/Nb > 4. With the flag off, results are bit-identical to earlier runs.
 
 ## Metrics written (`metrics.csv`, per target, for train / val / test)
 
-R² (report as a decimal, e.g. 0.999998, never as a percentage), RMSE and MAE (absolute, same units as Nu/Sh), MaxAE, MAPE (%), MaxRelErr (%), Within_0p1pct and Within_0p5pct (% of rows with relative error ≤ 0.1% / ≤ 0.5%).
+R² (report as a decimal, e.g. 0.999998, never as a percentage), RMSE and MAE (absolute, same units as Nu/Sh), MaxAE, MAPE (%), MedRelErr and P95RelErr (median and 95th-percentile relative error, %), MaxRelErr (%), Within_0p1pct and Within_0p5pct (% of rows with relative error ≤ 0.1% / ≤ 0.5%).
+
+Every report gives the median and 95th-percentile relative error next to the maximum: for Sh a handful of rows dominate the squared error and the maximum. (`metrics.csv` files written before 20 Oct 2026 lack these two columns; `analysis/final_report.py` computes them from `predictions_test.csv`.)
 
 Do not add an "accuracy %" column: for regression it is just 100 − MAPE and reviewers object to it. If "RMSE %" or "MAE %" are wanted, state the formula (e.g. RMSE / mean(y) × 100) in the table caption.
 
 ## Outputs per model folder
 
-`metrics.csv`, `loss_curve.png` (train + validation, Adam → L-BFGS marked), `error_histogram.png`, `parity.png`, `predictions_test.csv`, `loss_history.csv`, `model_seed*.pt`, `scaler.json`, and `design_selection.csv` with `--auto`. Across models: `summary_metrics.csv`, `summary_r2_rmse.png`.
+`metrics.csv`, `loss_curve.png` (train + validation, Adam → L-BFGS marked), `error_histogram.png`, `parity.png`, `predictions_test.csv`, `predictions_val.csv` (since 20 Oct 2026; for older runs rebuild it with `analysis/rebuild_predictions.py`), `loss_history.csv`, `model_seed*.pt`, `scaler.json`, and `design_selection.csv` with `--auto`. Across models: `summary_metrics.csv`, `summary_r2_rmse.png`.
 
 ## Checks after every training run (report any failure to the user)
 
-1. Test R² ≥ 0.9999 for every target, and RMSE within about 2× of the reference tables in `docs/RESULTS_AND_REVIEW.md`.
+1. Test RMSE within mean + 2 sd of split seeds 0–4 for that model (`analysis/final_report.py`, `--band-template` for the folders of the seed 0–4 runs).
 2. Validation loss keeps falling during L-BFGS. With noise-free solver data a validation/train loss ratio of 3–5× is normal; validation loss rising while train loss falls is overfitting.
 3. Error histogram centred on zero (mean error < 10% of its sd).
 4. MaxRelErr below about 1% for the final design; if not, list the worst rows from `predictions_test.csv`. For Nu they are expected to be the smallest Nu values.
