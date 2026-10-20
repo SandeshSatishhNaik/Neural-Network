@@ -1,0 +1,10 @@
+
+=== data_cone: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Sh']
+    data_cone: seed 0 done, final train loss 1.00e-05, val 4.94e-05
+    data_cone: seed 1 done, final train loss 1.43e-05, val 7.14e-05
+    data_cone: seed 2 done, final train loss 1.76e-05, val 7.08e-05
+    data_cone |     Sh | PASR quad anchor + log(Nt/Nb) | test R2 0.999993  RMSE 5.721e-04  MaxRelErr 0.71%
+
+All results in /home/user/Neural-Network/results_ratio/split3/Sh
+    model                        design target    n       R2     RMSE      MAE  MAPE_pct  MedRelErr_pct  P95RelErr_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+data_cone PASR quad anchor + log(Nt/Nb)     Sh 1100 0.999993 0.000572 0.000187  0.011387       0.006136        0.03721       0.705158      99.272727      99.909091

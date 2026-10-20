@@ -1,0 +1,10 @@
+
+=== data_plate: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Sh']
+    data_plate: seed 0 done, final train loss 1.38e-05, val 6.58e-05
+    data_plate: seed 1 done, final train loss 1.72e-05, val 9.28e-05
+    data_plate: seed 2 done, final train loss 1.55e-05, val 7.29e-05
+    data_plate |     Sh | PASR quad anchor + log(Nt/Nb) | test R2 0.999996  RMSE 4.390e-04  MaxRelErr 0.48%
+
+All results in /home/user/Neural-Network/results_ratio/split3/Sh
+     model                        design target    n       R2     RMSE      MAE  MAPE_pct  MedRelErr_pct  P95RelErr_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+data_plate PASR quad anchor + log(Nt/Nb)     Sh 1100 0.999996 0.000439 0.000136  0.008604       0.004558       0.028599       0.477698      99.454545          100.0

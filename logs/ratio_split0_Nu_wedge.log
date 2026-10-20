@@ -1,0 +1,10 @@
+
+=== data_wedge: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Nu']
+    data_wedge: seed 0 done, final train loss 1.08e-05, val 7.26e-05
+    data_wedge: seed 1 done, final train loss 1.28e-05, val 7.02e-05
+    data_wedge: seed 2 done, final train loss 8.44e-06, val 5.43e-05
+    data_wedge |     Nu | PASR quad anchor + log(Nt/Nb) | test R2 1.000000  RMSE 1.092e-04  MaxRelErr 0.30%
+
+All results in /home/user/Neural-Network/results_ratio/split0/Nu
+     model                        design target    n  R2     RMSE      MAE  MAPE_pct  MedRelErr_pct  P95RelErr_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+data_wedge PASR quad anchor + log(Nt/Nb)     Nu 1100 1.0 0.000109 0.000058    0.0163       0.010239       0.054961       0.304932      98.818182          100.0
