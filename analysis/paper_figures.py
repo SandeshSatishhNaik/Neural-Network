@@ -62,20 +62,19 @@ fig, ax = plt.subplots(figsize=(6.4, 3.6))
 for i, t in enumerate(TARGETS):
     st = STYLE[t]
     for k, g in enumerate(GEOS):
-        v = T[(T.geometry == g) & (T.target == t)].RMSE.values; x = k + (i - 0.5) * 0.28
+        v = 1e4 * T[(T.geometry == g) & (T.target == t)].RMSE.values; x = k + (i - 0.5) * 0.28
         ax.scatter(np.full(len(v), x) + np.linspace(-0.04, 0.04, len(v)), v, s=14, color=st["color"], alpha=.35, lw=0, zorder=2)
         ax.errorbar(x, v.mean(), yerr=v.std(ddof=1), fmt=st["marker"], ms=7, color=st["color"], ecolor=st["color"],
                     elinewidth=2, capsize=0, mec="white", mew=1.5, zorder=3, label=st["label"] if k == 0 else None)
-        ax.annotate(f"{v.mean():.2e}", (x, v.mean() + v.std(ddof=1)), xytext=(0, 4), textcoords="offset points",
+        ax.annotate(f"{v.mean():.2f}", (x, v.mean() + v.std(ddof=1)), xytext=(0, 4), textcoords="offset points",
                     ha="center", va="bottom", fontsize=7, color=MUTED)
 ax.set_xticks(range(len(GEOS))); ax.set_xticklabels(GEOS, color=INK); ax.set_xlim(-0.6, len(GEOS) - 0.4)
-ax.set_ylim(0, None); ax.set_ylabel("test RMSE (absolute)", color=INK)
-ax.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+ax.set_ylim(0, None); ax.set_ylabel("test RMSE (×10⁻⁴, absolute)", color=INK)
 ax.grid(axis="y", color=GRID, lw=.8); ax.set_axisbelow(True)
 for s in ("top", "right"): ax.spines[s].set_visible(False)
 for s in ("left", "bottom"): ax.spines[s].set_color(MUTED)
 ax.tick_params(colors=MUTED)
-ax.legend(frameon=False, fontsize=8, loc="upper left", labelcolor=INK)
-ax.set_title("Test RMSE per model, mean ± sd over split seeds 5–9 (faint dots: individual splits)", loc="left", fontsize=9, color=INK)
+ax.legend(frameon=False, fontsize=8, loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, labelcolor=INK, borderaxespad=0.2)
+fig.suptitle("Test RMSE per model, mean ± sd over split seeds 5–9 (faint dots: individual splits)", x=.01, ha="left", fontsize=9, color=INK)
 fig.tight_layout(); fig.savefig(os.path.join(FIG, "summary_rmse.png"), dpi=300); plt.close(fig)
 print("\n".join(lines)); print("\nfigures:", sorted(os.listdir(FIG)))

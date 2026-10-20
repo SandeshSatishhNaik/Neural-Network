@@ -91,3 +91,11 @@ Approved by the user after §9 showed Sh errors concentrated where Nt/Nb > 4.
 - **Claims from the chat sessions that did not hold:** "Sh does better in the joint model" and "dual encoding is best for Sh" (§9). Neither should appear in the paper.
 
 - **Check 1 revised (user decision, 20 Oct 2026):** band from the reference model's split seeds 0–4, applied only to runs on new seeds, with R² ≥ 0.9999 restored (CLAUDE.md, `analysis/final_report.py`).
+
+## 11. Paper table on split seeds 5–9 (Claude Code, 20 Oct 2026)
+
+- User decisions: Nu also run on split seeds 5–9 so that one table holds both targets from the same untouched test sets; seeds 0–4 kept as development results; check 1 = R² ≥ 0.9999 plus the reference model's seed 0–4 band applied to new runs only.
+- Paper table and figures (split seed 5, plus a summary RMSE figure) in `results_paper/`; RESULTS_AND_REVIEW §9.
+- Checks: Sh fails check 1 on split 6 (all geometries; hard split for the small-Nb region). Nu fails check 4 on split 6 for cone and plate, both from row 4474, the global minimum of Nu, which the model has to extrapolate to when it is in the test set.
+- Sign test for the Sh feature: 14/15 pairs, p = 16/32768 if the pairs were independent; they are not (shared inputs and splits, plate/wedge ratios correlate 0.86), so the split seed is the honest unit: 5/5, p = 1/32.
+

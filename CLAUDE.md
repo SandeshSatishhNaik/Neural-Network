@@ -41,6 +41,7 @@ CPU is enough (float64 is faster on CPU at this size). Training is about 3–5 m
 | Plain MLP, one model per dataset | `python train_separate.py data/*.xlsx --out results_mlp` |
 | **Recommended final run** | `python train_separate.py data/*.xlsx --per-target --auto --seeds 3 --out results_pasr` |
 | **Final design** (20 Oct 2026, `docs/RESULTS_AND_REVIEW.md` §8.5) | Nu: `--targets Nu --anchor quad --seeds 3`; Sh: `--targets Sh --anchor quad --ratio-features --seeds 3` |
+| Paper table and figures (split seeds 5–9) | `python analysis/final_report.py results_paper/config_<target>.csv --seeds 5 6 7 8 9 --template ... --out results_paper/report_<target>`, then `python analysis/paper_figures.py` (exact commands in `docs/RESULTS_AND_REVIEW.md` §9 sources) |
 | Final configuration on a new split | `python analysis/split_commands.py results_final/final_config.csv <split seeds>`, then `python analysis/final_report.py results_final/final_config.csv` |
 
 `--auto` trains four designs (MLP, quadratic anchor, dual encoding, both) and keeps the one with the lowest **validation** error; it writes `design_selection.csv`. It is about 4× slower than a single design.

@@ -1,0 +1,26 @@
+| Geometry | Target | Design | Split | R² | RMSE | MAE | MAPE % | Median rel. err. % | 95th pct rel. err. % | Max rel. err. % | Within 0.1 % | Within 0.5 % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| cone | Nu | per-target: PASR quad anchor | seed 5 | 0.9999999 | 1.05e-04 | 6.31e-05 | 0.014 | 0.009 | 0.041 | 0.788 | 99.5 | 99.9 |
+|  |  |  | mean ± sd (seeds 5–9) | 0.9999999 ± 0.0000000 | 1.08e-04 ± 5.48e-06 | 6.60e-05 ± 4.04e-06 | 0.015 ± 0.001 | 0.009 ± 0.001 | 0.043 ± 0.002 | 0.687 ± 0.464 | 99.2 ± 0.3 | 99.9 ± 0.1 |
+| plate | Nu | per-target: PASR quad anchor | seed 5 | 0.9999998 | 9.62e-05 | 4.96e-05 | 0.014 | 0.009 | 0.041 | 0.583 | 99.3 | 99.9 |
+|  |  |  | mean ± sd (seeds 5–9) | 0.9999998 ± 0.0000000 | 8.98e-05 ± 1.29e-05 | 5.03e-05 ± 3.29e-06 | 0.015 ± 0.001 | 0.009 ± 0.000 | 0.043 ± 0.002 | 0.598 ± 0.307 | 99.2 ± 0.3 | 99.9 ± 0.1 |
+| wedge | Nu | per-target: PASR quad anchor | seed 5 | 0.9999998 | 1.04e-04 | 5.09e-05 | 0.015 | 0.009 | 0.044 | 0.520 | 99.1 | 99.9 |
+|  |  |  | mean ± sd (seeds 5–9) | 0.9999998 ± 0.0000001 | 9.25e-05 ± 1.58e-05 | 5.03e-05 ± 3.36e-06 | 0.015 ± 0.001 | 0.009 ± 0.000 | 0.043 ± 0.001 | 0.573 ± 0.276 | 99.1 ± 0.3 | 99.9 ± 0.0 |
+
+Checks (False = fail):
+geometry target  split_seed  c1_R2  c1_RMSE  c1_band_mean_plus_2sd  c1_band_applies  c1_pass  info_RMSE_over_old_ref  c2_pass  c2_val_over_train_max  c3_mean_over_sd  c3_pass  c4_MaxRelErr_pct  c4_pass  c5_pass
+    cone     Nu           5    1.0 0.000105               0.000143             True     True                0.946244     True               7.085188         0.023688     True          0.787839     True     True
+    cone     Nu           6    1.0 0.000117               0.000143             True     True                1.053665     True               7.312474         0.011838     True          1.341202    False     True
+    cone     Nu           7    1.0 0.000105               0.000143             True     True                0.947352     True               5.079739         0.031320     True          0.828335     True     True
+    cone     Nu           8    1.0 0.000111               0.000143             True     True                0.997583     True               5.482370         0.034959     True          0.267211     True     True
+    cone     Nu           9    1.0 0.000104               0.000143             True     True                0.936857     True               5.624697         0.029703     True          0.209891     True     True
+   plate     Nu           5    1.0 0.000096               0.000118             True     True                1.024992     True               6.756364         0.004281     True          0.583152     True     True
+   plate     Nu           6    1.0 0.000108               0.000118             True     True                1.152016     True               7.386465         0.015195     True          1.033443    False     True
+   plate     Nu           7    1.0 0.000079               0.000118             True     True                0.845885     True               4.747000         0.040421     True          0.749772     True     True
+   plate     Nu           8    1.0 0.000089               0.000118             True     True                0.947411     True               4.974830         0.016245     True          0.295977     True     True
+   plate     Nu           9    1.0 0.000076               0.000118             True     True                0.813540     True               5.732029         0.050099     True          0.328852     True     True
+   wedge     Nu           5    1.0 0.000104               0.000120             True     True                1.111341     True               7.442401         0.004666     True          0.519706     True     True
+   wedge     Nu           6    1.0 0.000113               0.000120             True     True                1.207119     True               6.024101         0.030498     True          0.968963     True     True
+   wedge     Nu           7    1.0 0.000079               0.000120             True     True                0.840091     True               4.314214         0.041405     True          0.722874     True     True
+   wedge     Nu           8    1.0 0.000089               0.000120             True     True                0.945873     True               5.216188         0.000941     True          0.337056     True     True
+   wedge     Nu           9    1.0 0.000077               0.000120             True     True                0.825241     True               5.400724         0.043468     True          0.315239     True     True

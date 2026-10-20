@@ -1,0 +1,26 @@
+| Geometry | Target | Design | Split | R² | RMSE | MAE | MAPE % | Median rel. err. % | 95th pct rel. err. % | Max rel. err. % | Within 0.1 % | Within 0.5 % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| cone | Sh | per-target: PASR quad anchor + log(Nt/Nb) | seed 5 | 0.9999981 | 2.97e-04 | 1.70e-04 | 0.010 | 0.006 | 0.031 | 0.351 | 99.6 | 100.0 |
+|  |  |  | mean ± sd (seeds 5–9) | 0.9999962 ± 0.0000027 | 4.10e-04 ± 1.38e-04 | 1.87e-04 ± 1.50e-05 | 0.012 ± 0.001 | 0.006 ± 0.000 | 0.036 ± 0.004 | 0.514 ± 0.183 | 99.0 ± 0.3 | 99.9 ± 0.0 |
+| plate | Sh | per-target: PASR quad anchor + log(Nt/Nb) | seed 5 | 0.9999984 | 2.61e-04 | 1.16e-04 | 0.008 | 0.004 | 0.023 | 0.415 | 99.6 | 100.0 |
+|  |  |  | mean ± sd (seeds 5–9) | 0.9999972 ± 0.0000022 | 3.26e-04 ± 1.25e-04 | 1.28e-04 ± 1.92e-05 | 0.008 ± 0.001 | 0.004 ± 0.000 | 0.026 ± 0.003 | 0.373 ± 0.117 | 99.5 ± 0.2 | 100.0 ± 0.0 |
+| wedge | Sh | per-target: PASR quad anchor + log(Nt/Nb) | seed 5 | 0.9999984 | 2.61e-04 | 1.17e-04 | 0.008 | 0.005 | 0.023 | 0.370 | 99.6 | 100.0 |
+|  |  |  | mean ± sd (seeds 5–9) | 0.9999971 ± 0.0000022 | 3.36e-04 ± 1.17e-04 | 1.30e-04 ± 1.77e-05 | 0.008 ± 0.001 | 0.004 ± 0.000 | 0.025 ± 0.003 | 0.367 ± 0.107 | 99.4 ± 0.2 | 100.0 ± 0.0 |
+
+Checks (False = fail):
+geometry target  split_seed    c1_R2  c1_RMSE  c1_band_mean_plus_2sd  c1_band_applies  c1_pass  info_RMSE_over_old_ref  c2_pass  c2_val_over_train_max  c3_mean_over_sd  c3_pass  c4_MaxRelErr_pct  c4_pass  c5_pass
+    cone     Sh           5 0.999998 0.000297               0.000620             True     True                0.699348     True               8.675102         0.057291     True          0.350735     True     True
+    cone     Sh           6 0.999992 0.000646               0.000620             True    False                1.520174     True               4.656225         0.020127     True          0.793532     True     True
+    cone     Sh           7 0.999997 0.000389               0.000620             True     True                0.914430     True               7.622370         0.014381     True          0.520027     True     True
+    cone     Sh           8 0.999998 0.000332               0.000620             True     True                0.781157     True               8.681600         0.021384     True          0.346854     True     True
+    cone     Sh           9 0.999997 0.000384               0.000620             True     True                0.903447     True               6.447149         0.019452     True          0.557708     True     True
+   plate     Sh           5 0.999998 0.000261               0.000460             True     True                0.769599     True               8.292600         0.046501     True          0.415419     True     True
+   plate     Sh           6 0.999993 0.000542               0.000460             True    False                1.598796     True               6.022150         0.038892     True          0.554142     True     True
+   plate     Sh           7 0.999998 0.000317               0.000460             True     True                0.933723     True              12.180709         0.049003     True          0.271624     True     True
+   plate     Sh           8 0.999998 0.000283               0.000460             True     True                0.834195     True              13.079511         0.002169     True          0.350718     True     True
+   plate     Sh           9 0.999999 0.000230               0.000460             True     True                0.677880     True              10.348597         0.003121     True          0.275175     True     True
+   wedge     Sh           5 0.999998 0.000261               0.000474             True     True                0.853640     True               9.057650         0.049155     True          0.370211     True     True
+   wedge     Sh           6 0.999993 0.000540               0.000474             True    False                1.764332     True               5.679606         0.035748     True          0.549677     True     True
+   wedge     Sh           7 0.999997 0.000325               0.000474             True     True                1.063184     True              16.915958         0.046229     True          0.276880     True     True
+   wedge     Sh           8 0.999998 0.000291               0.000474             True     True                0.951481     True               7.515009         0.020221     True          0.307805     True     True
+   wedge     Sh           9 0.999998 0.000263               0.000474             True     True                0.859370     True              10.038915         0.006307     True          0.332389     True     True

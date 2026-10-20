@@ -241,8 +241,41 @@ With (a) the Nt/Nb > 4 share was 54% (32–92%): the feature lowers the error ev
 
 | Target | Design | Command | Paper numbers |
 | --- | --- | --- | --- |
-| Nu | per-target, quad anchor, 3 seeds | `--targets Nu --anchor quad --seeds 3` | §7.2 (split seeds 0–4) |
-| Sh | per-target, quad anchor + log(Nt/Nb), 3 seeds | `--targets Sh --anchor quad --ratio-features --seeds 3` | §8.2 (split seeds 5–9) |
+| Nu | per-target, quad anchor, 3 seeds | `--targets Nu --anchor quad --seeds 3` | §9 (split seeds 5–9) |
+| Sh | per-target, quad anchor + log(Nt/Nb), 3 seeds | `--targets Sh --anchor quad --ratio-features --seeds 3` | §9 (split seeds 5–9) |
 
 Figures for the final Sh models: `results_confirm/b/split<s>/Sh/data_<geometry>/` (`loss_curve.png`, `error_histogram.png`, `parity.png`).
+
+## 9. Paper table: final design, split seeds 5–9 (20 Oct 2026)
+
+Both targets from the same five test sets (split seeds 5–9), none of which was used for any decision. Seeds 0–4 results (§7.2, §8.1) are **development results**. Source: `results_paper/paper_table.csv`, `results_paper/paper_table.md`; built by `analysis/final_report.py` (per target) and `analysis/paper_figures.py`.
+
+| Geometry | Target | Design | R² | RMSE | MAE | MAPE % | Median rel. err. % | 95th pct rel. err. % | Max rel. err. % | Within 0.1 % | Within 0.5 % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| cone | Nu | PASR quad anchor | 0.9999999 ± 0.0000000 | 1.08e-04 ± 5.48e-06 | 6.60e-05 ± 4.04e-06 | 0.015 ± 0.001 | 0.009 ± 0.001 | 0.043 ± 0.002 | 0.687 ± 0.464 | 99.2 ± 0.3 | 99.9 ± 0.1 |
+| cone | Sh | PASR quad anchor + log(Nt/Nb) | 0.9999962 ± 0.0000027 | 4.10e-04 ± 1.38e-04 | 1.87e-04 ± 1.50e-05 | 0.012 ± 0.001 | 0.006 ± 0.000 | 0.036 ± 0.004 | 0.514 ± 0.183 | 99.0 ± 0.3 | 99.9 ± 0.0 |
+| plate | Nu | PASR quad anchor | 0.9999998 ± 0.0000000 | 8.98e-05 ± 1.29e-05 | 5.03e-05 ± 3.29e-06 | 0.015 ± 0.001 | 0.009 ± 0.000 | 0.043 ± 0.002 | 0.598 ± 0.307 | 99.2 ± 0.3 | 99.9 ± 0.1 |
+| plate | Sh | PASR quad anchor + log(Nt/Nb) | 0.9999972 ± 0.0000022 | 3.26e-04 ± 1.25e-04 | 1.28e-04 ± 1.92e-05 | 0.008 ± 0.001 | 0.004 ± 0.000 | 0.026 ± 0.003 | 0.373 ± 0.117 | 99.5 ± 0.2 | 100.0 ± 0.0 |
+| wedge | Nu | PASR quad anchor | 0.9999998 ± 0.0000001 | 9.25e-05 ± 1.58e-05 | 5.03e-05 ± 3.36e-06 | 0.015 ± 0.001 | 0.009 ± 0.000 | 0.043 ± 0.001 | 0.573 ± 0.276 | 99.1 ± 0.3 | 99.9 ± 0.0 |
+| wedge | Sh | PASR quad anchor + log(Nt/Nb) | 0.9999971 ± 0.0000022 | 3.36e-04 ± 1.17e-04 | 1.30e-04 ± 1.77e-05 | 0.008 ± 0.001 | 0.004 ± 0.000 | 0.025 ± 0.003 | 0.367 ± 0.107 | 99.4 ± 0.2 | 100.0 ± 0.0 |
+
+Test-set accuracy of the final surrogates, mean ± sd over five random 70/10/20 splits (split seeds 5–9, 1,100 test rows each), each model a 3-network ensemble. RMSE and MAE are absolute (dimensionless Nu, Sh). No design or setting was chosen using these test sets.
+
+### 9.1 Checks (CLAUDE.md, revised check 1), 30 runs (`results_paper/report_{Nu,Sh}/checks.csv`)
+
+| Check | Nu (15 runs) | Sh (15 runs) |
+| --- | --- | --- |
+| 1. R² ≥ 0.9999; RMSE ≤ mean + 2 sd of the reference model's seeds 0–4 | passes (min R² 0.9999998) | **fails 3/15**: split 6, all geometries (RMSE 6.5e-4 / 5.4e-4 / 5.4e-4 vs band 6.2e-4 / 4.6e-4 / 4.7e-4); min R² 0.9999916 |
+| 2. Validation loss falls in L-BFGS | passes (val/train 4.3–7.4×) | passes (val/train 4.7–17×) |
+| 3. Histogram centred | passes (max \|mean\|/sd 0.050) | passes (0.057) |
+| 4. Max rel. error < 1% | **fails 2/15**: cone split 6 (1.34%), plate split 6 (1.03%) | passes (max 0.79%) |
+| 5. Loss drops after the switch | passes | passes |
+
+- **Nu check 4:** both failures are row 4474, the smallest Nu in the whole dataset for every geometry (Nu = 0.0229 cone, 0.0109 plate, 0.0102 wedge; Rd 0.51 at its lower bound, Nb 1.42, Nt 1.32). When a split puts it in the test set (seeds 5 and 6), the model extrapolates below the smallest Nu it was trained on; absolute error 3e-4. This is the expected Nu failure mode (CLAUDE.md, check 4) and explains why Nu max relative error is 0.57–0.69 ± 0.3–0.5% here but about 0.25% on seeds 0–4. Paper: state that the maximum relative error is driven by the minimum-Nu corner of the input space.
+- **Sh check 1:** split 6 is the hard split for Sh (its test set holds more small-Nb rows); see §8.2–8.3.
+
+### 9.2 Figures (`results_paper/figures/`)
+
+- `<geometry>_<target>_loss_curve.png`, `_error_histogram.png`, `_parity.png` for all six final models, split seed 5 (copied from `results_confirm/a/split5/Nu/` and `results_confirm/b/split5/Sh/`).
+- `summary_rmse.png`: test RMSE mean ± sd per model over split seeds 5–9, individual splits shown as faint dots.
 
