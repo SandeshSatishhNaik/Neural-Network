@@ -74,8 +74,11 @@ Random split: mean R² 0.999998, RMSE 2.8e-4 – 4.7e-4. Corners split: mean R²
 3. ~~Error bars over split seeds 0–4.~~ Done, §7.
 4. ~~Paper table.~~ Done, §7 and `results_final/paper_table.csv`.
 5. Confirm with the user whether the wedge angle should be an input.
-6. **Sh near small Nb (new, §7.4).** Sh errors concentrate where Nt/Nb > 4. Candidate fix: add Nt/Nb as an input feature (method change, needs the user's agreement). Because this was found by looking at test rows, judge it on validation and confirm on split seeds that have not been used yet (5–9), not on 0–4.
+6. ~~Sh near small Nb: test Nt/Nb as a feature.~~ Done, §8: adopted for Sh (general improvement of about 1.1–1.3×), but it does not remove the small-Nb difficulty. Still open: Sh in the Nt/Nb > 4 corner is 6–7× harder than elsewhere. Options: more solver points near Nb = 0.2 (best evidence would come from the data), or a loss weighted toward that corner (must be judged on validation).
 7. Sh, quad anchor vs dual encoding: indistinguishable on validation at single-seed resolution (§7.1). If it matters for the paper, compare them with `--seeds 3` on validation.
+8. Check 1 (new definition, 20 Oct 2026) cannot fail on split seeds 0–4, which define its band (§8.4). Suggested: band from the reference model's seeds 0–4, applied to new runs only, plus R² ≥ 0.9999. Awaiting the user's decision.
+
+**Two claims from the chat sessions did not hold** (§7.1, §8): (1) "Sh does better in the joint Nu+Sh model": per-target won Sh on all three geometries once the PASR designs were available. (2) "Dual encoding is best for Sh": it beat the plain MLP but not the quadratic anchor. Neither should appear in the paper.
 
 ## 7. Final configuration (Claude Code session, 19 Oct 2026)
 
@@ -141,3 +144,82 @@ All three failures are Sh on split 3 and come from the same few rows (§7.4). Wi
 ### 7.5 Figures per final model
 
 `results_pasr/data_<geometry>__<target>/loss_curve.png`, `error_histogram.png`, `parity.png` (split seed 0); the same files for split seeds 1–4 in `results_split<s>/<target>/data_<geometry>/`.
+
+## 8. Nt/Nb as a feature (`--ratio-features`, Claude Code, 20 Oct 2026)
+
+(b) = final design (per-target quad anchor, 3 seeds) + log(Nt/Nb), standardised on training rows, as an extra network input and an extra linear anchor term; (a) = final design.
+
+### 8.1 Validation, split seeds 0–4 (decision)
+
+Rule fixed before any (b) result: (b) wins for a target if its validation RMSE is lower in ≥ 12 of 15 (geometry × split) pairs. Source: `results_ratio/val_comparison.md`, `val_comparison_paired.csv`. (a) validation predictions rebuilt from saved weights (`analysis/rebuild_predictions.py`, all 30 reproduce their saved test predictions exactly).
+
+| Target | (b) lower val RMSE | Decision | Median (a)/(b) val RMSE | Median (a)/(b), Nt/Nb > 4 rows |
+| --- | --- | --- | --- | --- |
+| Nu | 8 / 15 | no change | 1.02 | 1.04 |
+| Sh | 14 / 15 | **adopt (b)** | 1.28 | 1.32 |
+
+Validation, mean ± sd over split seeds 0–4:
+
+| Geometry | Target | Design | Val RMSE | Val RMSE, Nt/Nb > 4 | Val RMSE, Nt/Nb ≤ 4 | Median rel. err. % | 95th pct rel. err. % | Max rel. err. % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| cone | Nu | (a) | 1.13e-04 ± 2.14e-05 | 2.56e-04 ± 3.92e-05 | 1.04e-04 ± 2.04e-05 | 0.009 ± 0.000 | 0.043 ± 0.003 | 0.195 ± 0.067 |
+| cone | Nu | (b) | 1.15e-04 ± 1.44e-05 | 2.38e-04 ± 4.79e-05 | 1.07e-04 ± 1.35e-05 | 0.010 ± 0.000 | 0.046 ± 0.003 | 0.179 ± 0.079 |
+| cone | Sh | (a) | 4.94e-04 ± 1.30e-04 | 1.91e-03 ± 6.99e-04 | 3.21e-04 ± 3.54e-05 | 0.007 ± 0.001 | 0.045 ± 0.008 | 0.664 ± 0.463 |
+| cone | Sh | (b) | 3.63e-04 ± 8.19e-05 | 1.23e-03 ± 4.51e-04 | 2.69e-04 ± 3.27e-05 | 0.006 ± 0.001 | 0.037 ± 0.006 | 0.350 ± 0.277 |
+| plate | Nu | (a) | 9.33e-05 ± 1.80e-05 | 1.58e-04 ± 3.98e-05 | 9.01e-05 ± 1.85e-05 | 0.009 ± 0.001 | 0.044 ± 0.003 | 0.206 ± 0.093 |
+| plate | Nu | (b) | 8.71e-05 ± 1.03e-05 | 1.45e-04 ± 4.18e-05 | 8.37e-05 ± 8.61e-06 | 0.010 ± 0.001 | 0.045 ± 0.006 | 0.199 ± 0.059 |
+| plate | Sh | (a) | 2.98e-04 ± 6.53e-05 | 1.03e-03 ± 2.87e-04 | 2.23e-04 ± 3.60e-05 | 0.005 ± 0.000 | 0.034 ± 0.007 | 0.199 ± 0.066 |
+| plate | Sh | (b) | 2.59e-04 ± 8.59e-05 | 8.83e-04 ± 4.68e-04 | 1.88e-04 ± 3.07e-05 | 0.005 ± 0.000 | 0.026 ± 0.004 | 0.168 ± 0.089 |
+| wedge | Nu | (a) | 9.64e-05 ± 2.03e-05 | 1.61e-04 ± 5.00e-05 | 9.31e-05 ± 2.16e-05 | 0.010 ± 0.000 | 0.046 ± 0.003 | 0.210 ± 0.105 |
+| wedge | Nu | (b) | 9.30e-05 ± 1.13e-05 | 1.57e-04 ± 4.60e-05 | 8.95e-05 ± 8.66e-06 | 0.010 ± 0.001 | 0.047 ± 0.004 | 0.193 ± 0.058 |
+| wedge | Sh | (a) | 3.13e-04 ± 8.03e-05 | 1.11e-03 ± 3.81e-04 | 2.25e-04 ± 3.84e-05 | 0.005 ± 0.000 | 0.031 ± 0.005 | 0.220 ± 0.124 |
+| wedge | Sh | (b) | 2.59e-04 ± 8.23e-05 | 9.42e-04 ± 4.61e-04 | 1.77e-04 ± 2.33e-05 | 0.005 ± 0.000 | 0.025 ± 0.003 | 0.186 ± 0.105 |
+
+### 8.2 Test confirmation, Sh, split seeds 5–9 (test used once; no decision taken after it)
+
+(a) and (b) both trained on seeds 5–9 so the confirmation has a comparison. Source: `results_confirm/report_b/paper_table.md` (final Sh), `results_confirm/report_a/paper_table.md` (comparison).
+
+| Geometry | Target | Design | Split | R² | RMSE | MAE | MAPE % | Median rel. err. % | 95th pct rel. err. % | Max rel. err. % | Within 0.1 % | Within 0.5 % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| cone | Sh | quad anchor + log(Nt/Nb) | seed 5 | 0.9999981 | 2.97e-04 | 1.70e-04 | 0.010 | 0.006 | 0.031 | 0.351 | 99.6 | 100.0 |
+| | | | mean ± sd (seeds 5–9) | 0.9999962 ± 0.0000027 | 4.10e-04 ± 1.38e-04 | 1.87e-04 ± 1.50e-05 | 0.012 ± 0.001 | 0.006 ± 0.000 | 0.036 ± 0.004 | 0.514 ± 0.183 | 99.0 ± 0.3 | 99.9 ± 0.0 |
+| plate | Sh | quad anchor + log(Nt/Nb) | seed 5 | 0.9999984 | 2.61e-04 | 1.16e-04 | 0.008 | 0.004 | 0.023 | 0.415 | 99.6 | 100.0 |
+| | | | mean ± sd (seeds 5–9) | 0.9999972 ± 0.0000022 | 3.26e-04 ± 1.25e-04 | 1.28e-04 ± 1.92e-05 | 0.008 ± 0.001 | 0.004 ± 0.000 | 0.026 ± 0.003 | 0.373 ± 0.117 | 99.5 ± 0.2 | 100.0 ± 0.0 |
+| wedge | Sh | quad anchor + log(Nt/Nb) | seed 5 | 0.9999984 | 2.61e-04 | 1.17e-04 | 0.008 | 0.005 | 0.023 | 0.370 | 99.6 | 100.0 |
+| | | | mean ± sd (seeds 5–9) | 0.9999971 ± 0.0000022 | 3.36e-04 ± 1.17e-04 | 1.30e-04 ± 1.77e-05 | 0.008 ± 0.001 | 0.004 ± 0.000 | 0.025 ± 0.003 | 0.367 ± 0.107 | 99.4 ± 0.2 | 100.0 ± 0.0 |
+| cone | Sh | quad anchor (a) | mean ± sd (seeds 5–9) | 0.9999952 ± 0.0000017 | 4.74e-04 ± 8.04e-05 | 2.21e-04 ± 2.23e-05 | 0.014 ± 0.001 | 0.007 ± 0.000 | 0.046 ± 0.007 | 0.549 ± 0.012 | 98.3 ± 0.7 | 99.9 ± 0.0 |
+| plate | Sh | quad anchor (a) | mean ± sd (seeds 5–9) | 0.9999953 ± 0.0000054 | 4.04e-04 ± 2.20e-04 | 1.58e-04 ± 2.00e-05 | 0.010 ± 0.001 | 0.005 ± 0.000 | 0.033 ± 0.003 | 0.397 ± 0.280 | 99.1 ± 0.4 | 100.0 ± 0.0 |
+| wedge | Sh | quad anchor (a) | mean ± sd (seeds 5–9) | 0.9999950 ± 0.0000059 | 4.15e-04 ± 2.30e-04 | 1.56e-04 ± 1.93e-05 | 0.010 ± 0.001 | 0.005 ± 0.000 | 0.033 ± 0.003 | 0.430 ± 0.287 | 99.1 ± 0.3 | 100.0 ± 0.0 |
+
+- (b) has lower test RMSE in 14 of 15 (geometry × split) pairs, median (a)/(b) = 1.12 (validation: 1.28; a smaller gain on fresh data is expected).
+- (b) has a lower 95th-percentile relative error in 15 of 15 pairs, but a lower **maximum** relative error in only 6 of 15: the feature does not improve the worst case.
+- Nu was not confirmed on test (it did not win on validation) and keeps design (a): paper numbers for Nu remain §7.2.
+
+### 8.3 What the feature does and does not do
+
+- It does **not** fix the small-Nb corner. Test RMSE on rows with Nt/Nb > 4 falls 14% (1.65e-3 → 1.42e-3), on the other rows 19% (2.64e-4 → 2.13e-4); the corner stays 6–7× harder, and on average 5.9 of the 10 worst rows still have Nt/Nb > 4 under both designs.
+- It is a general improvement of Sh by about 1.1–1.3×, plausibly because log(Nt/Nb) gives the quadratic anchor a term it cannot build from x, x² and cross terms. The paper should describe it this way, not as a fix for the corner.
+
+### 8.4 Checks, seeds 5–9 (`results_confirm/report_{a,b}/checks.csv`)
+
+| Check | (a) | (b) |
+| --- | --- | --- |
+| 1. RMSE ≤ mean + 2 sd of the same model's seeds 0–4 | fails 2/15: plate, wedge split 6 | fails 3/15: cone, plate, wedge split 6 |
+| 2. Validation loss falls in L-BFGS | passes (val/train 4.7–17×) | passes |
+| 3. Histogram centred | passes | passes |
+| 4. Max rel. error < 1% | passes (max 0.91%) | passes (max 0.79%) |
+| 5. Loss drops after the switch | passes | passes |
+
+- Split 6 is a hard split for Sh in both designs (its test set holds more of the hard rows); (b) is still better than (a) on it for plate and wedge (1.46×, 1.52×) and slightly worse for cone (0.95×). (b) fails check 1 more often because its own seed 0–4 band is narrower, not because it is worse.
+- R² ≥ 0.99998 on every run (no longer part of check 1).
+- The new check 1 does fire on new seeds, but on seeds 0–4 it passed all 30 runs (§7.3 failures included), because a failing run widens its own band.
+
+### 8.5 Final design for the paper
+
+| Target | Design | Command | Paper numbers |
+| --- | --- | --- | --- |
+| Nu | per-target, quad anchor, 3 seeds | `--targets Nu --anchor quad --seeds 3` | §7.2 (split seeds 0–4) |
+| Sh | per-target, quad anchor + log(Nt/Nb), 3 seeds | `--targets Sh --anchor quad --ratio-features --seeds 3` | §8.2 (split seeds 5–9) |
+
+Figures for the final Sh models: `results_confirm/b/split<s>/Sh/data_<geometry>/` (`loss_curve.png`, `error_histogram.png`, `parity.png`).
+

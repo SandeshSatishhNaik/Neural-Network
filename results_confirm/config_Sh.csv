@@ -1,0 +1,4 @@
+geometry,target,source,design,anchor,dual_encoding,folder,val_RMSE,val_MaxRelErr_pct,other_source,other_design,other_val_RMSE,val_RMSE_ratio_other_over_best
+cone,Sh,per-target,PASR quad anchor,quad,False,data_cone__Sh,0.0005230915130352,0.7301267723318788,joint,PASR dual encoding,0.0005487761634288,1.0491016385346543
+plate,Sh,per-target,PASR quad anchor,quad,False,data_plate__Sh,0.0003624867298321,0.1586765378641788,joint,PASR quad anchor,0.0004123866757515,1.137660062597362
+wedge,Sh,per-target,PASR quad anchor,quad,False,data_wedge__Sh,0.0003642939901015,0.1644766122900317,joint,PASR quad anchor,0.0004196968064107,1.1520827074137665

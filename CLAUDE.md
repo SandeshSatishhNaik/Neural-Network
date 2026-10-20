@@ -40,7 +40,7 @@ CPU is enough (float64 is faster on CPU at this size). Training is about 3–5 m
 | Smoke test (seconds per network) | `python train_separate.py data/*.xlsx --quick --out results_quick` |
 | Plain MLP, one model per dataset | `python train_separate.py data/*.xlsx --out results_mlp` |
 | **Recommended final run** | `python train_separate.py data/*.xlsx --per-target --auto --seeds 3 --out results_pasr` |
-| Fixed design instead of auto | add `--anchor quad` (chosen on validation for every geometry and target on 19 Oct 2026, see `docs/RESULTS_AND_REVIEW.md` §7) |
+| **Final design** (20 Oct 2026, `docs/RESULTS_AND_REVIEW.md` §8.5) | Nu: `--targets Nu --anchor quad --seeds 3`; Sh: `--targets Sh --anchor quad --ratio-features --seeds 3` |
 | Final configuration on a new split | `python analysis/split_commands.py results_final/final_config.csv <split seeds>`, then `python analysis/final_report.py results_final/final_config.csv` |
 
 `--auto` trains four designs (MLP, quadratic anchor, dual encoding, both) and keeps the one with the lowest **validation** error; it writes `design_selection.csv`. It is about 4× slower than a single design.
@@ -55,7 +55,7 @@ CPU is enough (float64 is faster on CPU at this size). Training is about 3–5 m
 - **Quadratic-anchored residual design** (`--anchor quad`, called PASR-Net in earlier notes): fit a least-squares quadratic response surface p(x) (78 terms) on training rows; the network learns r = t − p(x) divided by its training sd s; prediction t̂ = p(x) + s·NN(x). Best for Nu.
 - **Dual encoding** (`--dual-encoding`): network input = [scaled x, standardised log(x + 0.01·range)], 22 inputs. Beats the plain MLP for Sh, but not the quadratic anchor (19 Oct 2026, single seed, within noise).
 - **Ensemble:** `--seeds 3` averages three independently initialised networks in physical units.
-- **Ratio feature** (`--ratio-features`, default off, under evaluation since 20 Oct 2026): appends log(Nt/Nb), standardised on training rows, to the network inputs and as one extra linear term of the quadratic anchor (79 terms). Motivated by Sh errors concentrating where Nt/Nb > 4. With the flag off, results are bit-identical to earlier runs.
+- **Ratio feature** (`--ratio-features`, default off; adopted for Sh on 20 Oct 2026, no gain for Nu): appends log(Nt/Nb), standardised on training rows, to the network inputs and as one extra linear term of the quadratic anchor (79 terms). Motivated by Sh errors concentrating where Nt/Nb > 4; it improves Sh by about 1.1–1.3× everywhere but does not remove that corner. With the flag off, results are bit-identical to earlier runs.
 
 ## Metrics written (`metrics.csv`, per target, for train / val / test)
 

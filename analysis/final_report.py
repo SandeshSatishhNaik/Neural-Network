@@ -7,7 +7,7 @@ results_split<s>/ (see split_commands.py). --template overrides this with a fold
 {s}, {target} and {geometry}, e.g. "results_ratio/split{s}/{target}/data_{geometry}".
 
 Check 1 (CLAUDE.md, 20 Oct 2026): test RMSE within mean + 2 sd of the same model's test RMSE over split
-seeds 0-4 (--band-template / --band-seeds; defaults to the folders of this report).
+seeds 0-4 (--band-template / --band-seeds; defaults to the final-design folders results_pasr/ and results_split<s>/).
 
 Usage: python analysis/final_report.py results_final/final_config.csv --seeds 0 1 2 3 4 --out results_final
 """
@@ -33,8 +33,8 @@ args = ap.parse_args()
 cfg = pd.read_csv(args.config); os.makedirs(args.out, exist_ok=True)
 
 
-def folder(r, s, template=None):
-    template = template or args.template
+def folder(r, s, template="report"):
+    template = args.template if template == "report" else template
     if template: return template.format(s=s, target=r.target, geometry=r.geometry)
     if s == 0: return os.path.join(args.seed0_dir, r.folder)
     return os.path.join(f"results_split{s}", "joint" if r.source == "joint" else r.target, f"data_{r.geometry}")

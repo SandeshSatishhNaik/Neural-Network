@@ -1,0 +1,118 @@
+{
+ "scaler": {
+  "x_cols": [
+   "beta1",
+   "beta2",
+   "alpha",
+   "Gr",
+   "delta",
+   "Rd",
+   "Bi",
+   "Nt",
+   "Nb",
+   "Cr",
+   "P"
+  ],
+  "y_cols": [
+   "Sh"
+  ],
+  "x_min": [
+   1.0003426241057403,
+   0.10015529486063429,
+   0.00030903751480406674,
+   1.0005447500807396,
+   1.0004477503293367,
+   0.5000851948028846,
+   0.500048163916237,
+   0.20002527745998264,
+   0.2000691681512983,
+   0.5000278756145715,
+   0.01001336208925995
+  ],
+  "x_max": [
+   1.9999690430740693,
+   0.4999276830520988,
+   0.4998942624874147,
+   1.999850584206555,
+   1.9999252606575415,
+   2.499907693921372,
+   0.9998092280035527,
+   1.499998434114041,
+   1.499800846317655,
+   1.4999820173775888,
+   0.049966645035535405
+  ],
+  "log_cols": [],
+  "y_mu": [
+   1.7308447714821107
+  ],
+  "y_sd": [
+   0.2156987525675514
+  ]
+ },
+ "design": "PASR quad anchor",
+ "anchor": "quad",
+ "dual_encoding": false,
+ "ratio_features": false,
+ "ratio_mean_sd": null,
+ "residual_scale_per_seed": [
+  [
+   0.207995284848148
+  ],
+  [
+   0.207995284848148
+  ],
+  [
+   0.207995284848148
+  ]
+ ],
+ "args": {
+  "files": [
+   "data/data_cone.xlsx"
+  ],
+  "targets": [
+   "Sh"
+  ],
+  "per_target": false,
+  "out": "results_confirm/a/split9/Sh",
+  "width": 128,
+  "depth": 4,
+  "act": "silu",
+  "adam_steps": 2500,
+  "lbfgs_iter": 1500,
+  "lr": 0.003,
+  "seeds": 3,
+  "log_targets": [
+   "Nu"
+  ],
+  "test_frac": 0.2,
+  "val_frac": 0.1,
+  "split_seed": 9,
+  "threads": 1,
+  "quick": false,
+  "anchor": "quad",
+  "dual_encoding": false,
+  "ratio_features": false,
+  "auto": false
+ },
+ "inputs": [
+  "beta1",
+  "beta2",
+  "alpha",
+  "Gr",
+  "delta",
+  "Rd",
+  "Bi",
+  "Nt",
+  "Nb",
+  "Cr",
+  "P"
+ ],
+ "targets": [
+  "Sh"
+ ],
+ "n_train": 3850,
+ "n_val": 550,
+ "n_test": 1100,
+ "seconds": 911.8096251487732
+}

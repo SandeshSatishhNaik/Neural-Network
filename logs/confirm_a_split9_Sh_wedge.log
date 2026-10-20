@@ -1,0 +1,10 @@
+
+=== data_wedge: 5500 rows, inputs ['beta1', 'beta2', 'alpha', 'Gr', 'delta', 'Rd', 'Bi', 'Nt', 'Nb', 'Cr', 'P'], targets ['Sh']
+    data_wedge: seed 0 done, final train loss 1.32e-05, val 2.48e-04
+    data_wedge: seed 1 done, final train loss 1.32e-05, val 1.84e-04
+    data_wedge: seed 2 done, final train loss 1.51e-05, val 2.02e-04
+    data_wedge |     Sh | PASR quad anchor | test R2 0.999998  RMSE 2.636e-04  MaxRelErr 0.20%
+
+All results in /home/user/Neural-Network/results_confirm/a/split9/Sh
+     model           design target    n       R2     RMSE     MAE  MAPE_pct  MedRelErr_pct  P95RelErr_pct  MaxRelErr_pct  Within_0p1pct  Within_0p5pct
+data_wedge PASR quad anchor     Sh 1100 0.999998 0.000264 0.00014  0.009256       0.004681       0.031539       0.198569      99.363636          100.0

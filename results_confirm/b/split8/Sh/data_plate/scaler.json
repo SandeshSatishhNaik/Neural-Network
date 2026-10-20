@@ -1,0 +1,121 @@
+{
+ "scaler": {
+  "x_cols": [
+   "beta1",
+   "beta2",
+   "alpha",
+   "Gr",
+   "delta",
+   "Rd",
+   "Bi",
+   "Nt",
+   "Nb",
+   "Cr",
+   "P"
+  ],
+  "y_cols": [
+   "Sh"
+  ],
+  "x_min": [
+   1.0001356242631523,
+   0.1000171382327173,
+   1.6408846773275253e-05,
+   1.0002349661646865,
+   1.0000906477215687,
+   0.5000851948028846,
+   0.500048163916237,
+   0.20002527745998264,
+   0.2000691681512983,
+   0.5004661206950319,
+   0.010006631164706023
+  ],
+  "x_max": [
+   1.9999690430740693,
+   0.4999276830520988,
+   0.4999299160876966,
+   1.9997570306193837,
+   1.9999252606575415,
+   2.499907693921372,
+   0.9999494279397696,
+   1.499998434114041,
+   1.499800846317655,
+   1.4996132129263602,
+   0.0499888341359728
+  ],
+  "log_cols": [],
+  "y_mu": [
+   1.5879853928916283
+  ],
+  "y_sd": [
+   0.20603463450462292
+  ]
+ },
+ "design": "PASR quad anchor + log(Nt/Nb)",
+ "anchor": "quad",
+ "dual_encoding": false,
+ "ratio_features": true,
+ "ratio_mean_sd": [
+  0.004181204145399291,
+  0.7443024950678382
+ ],
+ "residual_scale_per_seed": [
+  [
+   0.13376880255070853
+  ],
+  [
+   0.13376880255070853
+  ],
+  [
+   0.13376880255070853
+  ]
+ ],
+ "args": {
+  "files": [
+   "data/data_plate.xlsx"
+  ],
+  "targets": [
+   "Sh"
+  ],
+  "per_target": false,
+  "out": "results_confirm/b/split8/Sh",
+  "width": 128,
+  "depth": 4,
+  "act": "silu",
+  "adam_steps": 2500,
+  "lbfgs_iter": 1500,
+  "lr": 0.003,
+  "seeds": 3,
+  "log_targets": [
+   "Nu"
+  ],
+  "test_frac": 0.2,
+  "val_frac": 0.1,
+  "split_seed": 8,
+  "threads": 1,
+  "quick": false,
+  "anchor": "quad",
+  "dual_encoding": false,
+  "ratio_features": true,
+  "auto": false
+ },
+ "inputs": [
+  "beta1",
+  "beta2",
+  "alpha",
+  "Gr",
+  "delta",
+  "Rd",
+  "Bi",
+  "Nt",
+  "Nb",
+  "Cr",
+  "P"
+ ],
+ "targets": [
+  "Sh"
+ ],
+ "n_train": 3850,
+ "n_val": 550,
+ "n_test": 1100,
+ "seconds": 805.2480068206787
+}
