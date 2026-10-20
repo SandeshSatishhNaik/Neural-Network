@@ -1,0 +1,15 @@
+.venv/bin/python -u train_separate.py data/data_cone.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 5 --threads 1 --out results_confirm/a/split5/Nu > logs/confirm_a_split5_Nu_cone.log 2>&1
+.venv/bin/python -u train_separate.py data/data_plate.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 5 --threads 1 --out results_confirm/a/split5/Nu > logs/confirm_a_split5_Nu_plate.log 2>&1
+.venv/bin/python -u train_separate.py data/data_wedge.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 5 --threads 1 --out results_confirm/a/split5/Nu > logs/confirm_a_split5_Nu_wedge.log 2>&1
+.venv/bin/python -u train_separate.py data/data_cone.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 6 --threads 1 --out results_confirm/a/split6/Nu > logs/confirm_a_split6_Nu_cone.log 2>&1
+.venv/bin/python -u train_separate.py data/data_plate.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 6 --threads 1 --out results_confirm/a/split6/Nu > logs/confirm_a_split6_Nu_plate.log 2>&1
+.venv/bin/python -u train_separate.py data/data_wedge.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 6 --threads 1 --out results_confirm/a/split6/Nu > logs/confirm_a_split6_Nu_wedge.log 2>&1
+.venv/bin/python -u train_separate.py data/data_cone.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 7 --threads 1 --out results_confirm/a/split7/Nu > logs/confirm_a_split7_Nu_cone.log 2>&1
+.venv/bin/python -u train_separate.py data/data_plate.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 7 --threads 1 --out results_confirm/a/split7/Nu > logs/confirm_a_split7_Nu_plate.log 2>&1
+.venv/bin/python -u train_separate.py data/data_wedge.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 7 --threads 1 --out results_confirm/a/split7/Nu > logs/confirm_a_split7_Nu_wedge.log 2>&1
+.venv/bin/python -u train_separate.py data/data_cone.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 8 --threads 1 --out results_confirm/a/split8/Nu > logs/confirm_a_split8_Nu_cone.log 2>&1
+.venv/bin/python -u train_separate.py data/data_plate.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 8 --threads 1 --out results_confirm/a/split8/Nu > logs/confirm_a_split8_Nu_plate.log 2>&1
+.venv/bin/python -u train_separate.py data/data_wedge.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 8 --threads 1 --out results_confirm/a/split8/Nu > logs/confirm_a_split8_Nu_wedge.log 2>&1
+.venv/bin/python -u train_separate.py data/data_cone.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 9 --threads 1 --out results_confirm/a/split9/Nu > logs/confirm_a_split9_Nu_cone.log 2>&1
+.venv/bin/python -u train_separate.py data/data_plate.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 9 --threads 1 --out results_confirm/a/split9/Nu > logs/confirm_a_split9_Nu_plate.log 2>&1
+.venv/bin/python -u train_separate.py data/data_wedge.xlsx --targets Nu --anchor quad --seeds 3 --split-seed 9 --threads 1 --out results_confirm/a/split9/Nu > logs/confirm_a_split9_Nu_wedge.log 2>&1

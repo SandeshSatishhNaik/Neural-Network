@@ -90,3 +90,4 @@ Approved by the user after §9 showed Sh errors concentrated where Nt/Nb > 4.
 - **Decision.** Final design: Nu per-target quad anchor (unchanged); Sh per-target quad anchor + `--ratio-features`. Paper numbers: Nu from split seeds 0–4, Sh from split seeds 5–9 (RESULTS_AND_REVIEW §8.5).
 - **Claims from the chat sessions that did not hold:** "Sh does better in the joint model" and "dual encoding is best for Sh" (§9). Neither should appear in the paper.
 
+- **Check 1 revised (user decision, 20 Oct 2026):** band from the reference model's split seeds 0–4, applied only to runs on new seeds, with R² ≥ 0.9999 restored (CLAUDE.md, `analysis/final_report.py`).

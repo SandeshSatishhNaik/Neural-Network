@@ -99,7 +99,9 @@ Random split: mean R² 0.999998, RMSE 2.8e-4 – 4.7e-4. Corners split: mean R²
 - Per-target Sh `--auto` picked the quad anchor on all three geometries (validation NRMSE vs dual encoding: cone 2.45e-3 vs 2.99e-3, plate 2.01e-3 vs 2.34e-3, wedge 2.16e-3 vs 2.24e-3, single seed). The earlier "dual encoding is best for Sh" was measured against a plain MLP, not against the quad anchor.
 - The joint cone model picked dual encoding with all four candidates within 15% of each other: a noise-level choice.
 
-### 7.2 Paper table (test set, 3-seed ensemble, per-target quad-anchor design)
+### 7.2 Development results: test set, split seeds 0–4 (superseded for the paper by §9)
+
+**Development results.** These test sets were looked at during development (the Sh failure analysis in §7.4 used them), so they are not the paper numbers. The paper table is §9 (split seeds 5–9).
 
 Split seed 0, and mean ± sd over split seeds 0–4 (design fixed by the split-0 validation choice; seeds 1–4 are test sets no decision has touched). RMSE and MAE are absolute, in units of Nu/Sh. Source: `results_final/paper_table.csv`, `results_final/paper_table.md`.
 
@@ -191,11 +193,32 @@ Validation, mean ± sd over split seeds 0–4:
 | plate | Sh | quad anchor (a) | mean ± sd (seeds 5–9) | 0.9999953 ± 0.0000054 | 4.04e-04 ± 2.20e-04 | 1.58e-04 ± 2.00e-05 | 0.010 ± 0.001 | 0.005 ± 0.000 | 0.033 ± 0.003 | 0.397 ± 0.280 | 99.1 ± 0.4 | 100.0 ± 0.0 |
 | wedge | Sh | quad anchor (a) | mean ± sd (seeds 5–9) | 0.9999950 ± 0.0000059 | 4.15e-04 ± 2.30e-04 | 1.56e-04 ± 1.93e-05 | 0.010 ± 0.001 | 0.005 ± 0.000 | 0.033 ± 0.003 | 0.430 ± 0.287 | 99.1 ± 0.3 | 100.0 ± 0.0 |
 
-- (b) has lower test RMSE in 14 of 15 (geometry × split) pairs, median (a)/(b) = 1.12 (validation: 1.28; a smaller gain on fresh data is expected).
+- **Paired comparison, Sh, (b) vs (a), test RMSE on split seeds 5–9** (`results_confirm/report_{a,b}/paper_table_all_splits.csv`):
+
+  | Split seed | cone (a)/(b) | plate (a)/(b) | wedge (a)/(b) |
+  | --- | --- | --- | --- |
+  | 5 | 1.46 | 1.11 | 1.23 |
+  | 6 | 0.95 | 1.46 | 1.52 |
+  | 7 | 1.10 | 1.07 | 1.05 |
+  | 8 | 1.41 | 1.18 | 1.11 |
+  | 9 | 1.11 | 1.16 | 1.00 |
+
+  (b) has lower test RMSE in **14 of 15 pairs**; one-sided sign test **p = 16/32768 ≈ 0.0005**, median (a)/(b) = 1.12 (validation: 1.28; a smaller gain on fresh data is expected).
+  **Caveat on the p-value:** the sign test assumes 15 independent pairs. They are not: the three geometries share identical input rows and the same split on each seed, and the plate and wedge improvement ratios correlate at 0.86 across splits. Taking the split seed as the unit, (b) has the lower mean RMSE on 5 of 5 seeds, p = 1/32 ≈ 0.031. Report the conservative value (or both, with this reason) in the paper.
 - (b) has a lower 95th-percentile relative error in 15 of 15 pairs, but a lower **maximum** relative error in only 6 of 15: the feature does not improve the worst case.
 - Nu was not confirmed on test (it did not win on validation) and keeps design (a): paper numbers for Nu remain §7.2.
 
 ### 8.3 What the feature does and does not do
+
+**The small-Nb / high-Nt/Nb region remains the dominant Sh error source** in the final Sh design ((b), test, split seeds 5–9, 15 runs):
+
+| Region | Share of test rows | Share of squared Sh error, mean (min–max over 15 runs) |
+| --- | --- | --- |
+| Nt/Nb > 4 | 3.9% (3.1–4.6%) | 60% (33–85%) |
+| Nb < 0.3 | 7.5% (7.1–8.2%) | 71% (37–88%) |
+| 5 worst rows | 0.45% | 57% (29–82%) |
+
+With (a) the Nt/Nb > 4 share was 54% (32–92%): the feature lowers the error everywhere, so the corner's *share* of what remains does not fall. 5.9 of the 10 worst rows have Nt/Nb > 4 under both designs.
 
 - It does **not** fix the small-Nb corner. Test RMSE on rows with Nt/Nb > 4 falls 14% (1.65e-3 → 1.42e-3), on the other rows 19% (2.64e-4 → 2.13e-4); the corner stays 6–7× harder, and on average 5.9 of the 10 worst rows still have Nt/Nb > 4 under both designs.
 - It is a general improvement of Sh by about 1.1–1.3×, plausibly because log(Nt/Nb) gives the quadratic anchor a term it cannot build from x, x² and cross terms. The paper should describe it this way, not as a fix for the corner.

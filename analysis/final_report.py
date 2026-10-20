@@ -6,8 +6,10 @@ Model folders: by default split seed 0 is read from results_pasr/ (--seed0-dir) 
 results_split<s>/ (see split_commands.py). --template overrides this with a folder pattern using
 {s}, {target} and {geometry}, e.g. "results_ratio/split{s}/{target}/data_{geometry}".
 
-Check 1 (CLAUDE.md, 20 Oct 2026): test RMSE within mean + 2 sd of the same model's test RMSE over split
-seeds 0-4 (--band-template / --band-seeds; defaults to the final-design folders results_pasr/ and results_split<s>/).
+Check 1 (CLAUDE.md, 20 Oct 2026): test R² ≥ 0.9999, and test RMSE ≤ mean + 2 sd of the REFERENCE model's test
+RMSE over split seeds 0-4 (--band-template / --band-seeds; defaults to the final-design folders results_pasr/
+and results_split<s>/). The band is applied only to runs on split seeds outside --band-seeds: runs that define
+the band cannot be checked against it (they would widen their own band).
 
 Usage: python analysis/final_report.py results_final/final_config.csv --seeds 0 1 2 3 4 --out results_final
 """
@@ -75,9 +77,11 @@ for r in cfg.itertuples():
         e = p[f"{r.target}_error"]
         h = pd.read_csv(os.path.join(d, "loss_history.csv"))
         lc = [loss_checks(h[h.seed == k]) for k in sorted(h.seed.unique())]
+        band_applies = s not in args.band_seeds
         checks.append(dict(geometry=r.geometry, target=r.target, split_seed=s, folder=d,
-                           c1_RMSE=t["RMSE"], c1_band_mean_plus_2sd=band_hi, c1_pass=bool(t["RMSE"] <= band_hi),
-                           info_R2=t["R2"], info_RMSE_over_old_ref=t["RMSE"] / ref,
+                           c1_R2=t["R2"], c1_RMSE=t["RMSE"], c1_band_mean_plus_2sd=band_hi, c1_band_applies=band_applies,
+                           c1_pass=bool(t["R2"] >= 0.9999 and (not band_applies or t["RMSE"] <= band_hi)),
+                           info_RMSE_over_old_ref=t["RMSE"] / ref,
                            c2_pass=all(x["val_falls_in_lbfgs"] for x in lc),
                            c2_val_over_train_max=max(x["val_over_train"] for x in lc),
                            c3_mean_over_sd=abs(e.mean()) / e.std(), c3_pass=bool(abs(e.mean()) < 0.1 * e.std()),

@@ -71,7 +71,7 @@ Do not add an "accuracy %" column: for regression it is just 100 − MAPE and re
 
 ## Checks after every training run (report any failure to the user)
 
-1. Test RMSE within mean + 2 sd of split seeds 0–4 for that model (`analysis/final_report.py`, `--band-template` for the folders of the seed 0–4 runs).
+1. Test R² ≥ 0.9999 for every target, and, for runs on new split seeds only, test RMSE ≤ mean + 2 sd of the reference model's test RMSE over split seeds 0–4 (`analysis/final_report.py`, `--band-template` for the reference model's seed 0–4 folders). Runs on seeds 0–4 are not checked against the band they define.
 2. Validation loss keeps falling during L-BFGS. With noise-free solver data a validation/train loss ratio of 3–5× is normal; validation loss rising while train loss falls is overfitting.
 3. Error histogram centred on zero (mean error < 10% of its sd).
 4. MaxRelErr below about 1% for the final design; if not, list the worst rows from `predictions_test.csv`. For Nu they are expected to be the smallest Nu values.
